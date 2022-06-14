@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# author by xiaojun207
+
+DOMAINS=$(echo "$DOMAINS" | tr -s ' ')
+SslServer="$SslServer"
+mail="$mail"
+export SSL_DIR="/usr/local/openresty/nginx/conf/ssl"
+export RELOAD_CMD="openresty -s reload"
+
+if [ -z "$mail" ]; then
+  echo "[$(date)] Empty env var mail"
+  mail="youmail@example.com"
+fi
+
+if [ -z "$DOMAINS" ]; then
+  echo "[$(date)] Empty env var DOMAINS"
+#  exit 1
+fi
+
+mkdir -p ${SSL_DIR}/
+
+function CreateDefault() {
+  if [ -e "${SSL_DIR}/cert.pem" ]; then
+    echo "[$(date)] default cert exists in :${SSL_DIR}"
+  else
+    echo "[$(date)] create default cert to :${SSL_DIR}"
+    openssl req -x509 -newkey rsa:4096 -nodes -days 365 \
+      -subj "/C=CA/ST=QC/O=Company Inc/CN=example.com" \
+      -out ${SSL_DIR}/cert.pem \
+      -keyout ${SSL_DIR}/key.pem
+    chmod +w ${SSL_DIR}/*
+  fi
+}
+
+function StartAcmesh() {
+  echo "[$(date)] sleep 2 second to start Acme.sh..."
+  sleep 2
+  echo "[$(date)] Start Acme.sh..."
+  echo "[$(date)] SSL_DIR :${SSL_DIR}"
+  echo "[$(date)] mail :${mail}"
+  echo "[$(date)] RELOAD_CMD :${RELOAD_CMD}"
+
+  IFS=' '
+  read -ra list <<<"$DOMAINS"
+
+  ACME_DOMAIN_OPTION=""
+
+  for i in "${!list[@]}"; do
+    if [[ $i == 0 ]]; then
+      ACME_DOMAIN_OPTION+="-d ${list[$i]}"
+    else
+      ACME_DOMAIN_OPTION+=" -d ${list[$i]}"
+    fi
+  done
+
+  echo "[$(date)] Issue the cert: $DOMAINS with options $ACME_DOMAIN_OPTION"
+
+#  curl https://get.acme.sh | sh
+#  /acme.sh --install
+
+  if [[ -n "$SslServer" ]]; then
+    # 测试环境 https://acme-staging-v02.api.letsencrypt.org/directory
+    /acme.sh --set-default-ca --server $SslServer
+  fi
+
+  echo "[$(date)] acme.sh register .."
+  /acme.sh --register-account -m $mail
+
+  echo "[$(date)] acme.sh issue .."
+  /acme.sh --issue --nginx /usr/local/openresty/nginx/conf/nginx.conf $ACME_DOMAIN_OPTION --renew-hook "${RELOAD_CMD}"
+
+  echo "[$(date)] acme.sh install-cert .."
+  /acme.sh --install-cert $ACME_DOMAIN_OPTION \
+    --fullchain-file ${SSL_DIR}/fullchain.pem \
+    --cert-file ${SSL_DIR}/cert.pem \
+    --key-file ${SSL_DIR}/key.pem \
+    --reloadcmd "${RELOAD_CMD}"
+
+  echo "[$(date)] Start acme.sh crond "
+  crond
+}
+
+# 生成默认证书, 配置文件中使用，否则openresty启动会失败
+CreateDefault
+
+if [[ -n "$DOMAINS" ]]; then
+  export -f StartAcmesh
+  nohup bash -c StartAcmesh "${SSL_DIR}" "${RELOAD_CMD}" &
+fi
+
+echo "[$(date)] Start Openresty"
+openresty -g "daemon off;"
+
+
