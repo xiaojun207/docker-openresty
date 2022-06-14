@@ -28,7 +28,7 @@ This is a Openresty image with auto ssl，use acme.sh， you can set default-ca,
       -v "/data/openresty/acme_cert":/acme_cert/ \
       -e DOMAINS="example.com www.example.com test.example.com test2.example.com" \
       -e SslServer="zerossl" \
-      -e mail="youmail@example.com" \
+      -e mail="my@example.com" \
       --name myopenresty xiaojun207/openresty:latest
 ```
 注意：建议把路径/usr/local/openresty/nginx/conf/ssl、/acme_cert/中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
@@ -40,8 +40,8 @@ This is a Openresty image with auto ssl，use acme.sh， you can set default-ca,
 
 | 参数         | 是否必填 | 说明                                                                                                                                     |
 |------------|------|----------------------------------------------------------------------------------------------------------------------------------------|
-| DOMAINS    | 必填   | 域名列表参数是acme用来自动获取ssl，多域名以空格分隔。如果为空或不填，这就是个普通的openresty镜像，哈哈。                                                                               |
-| mail       | 必填   | 你的邮箱，用于获取ssl时配置                                                                                                                        |
+| DOMAINS    | 必填   | 域名列表参数是acme用来自动获取ssl，多域名以空格分隔。如果为空或不填，这就是个普通的openresty镜像，哈哈。                                                                           |
+| mail       | 否    | 你的邮箱，用于获取ssl时配置，有的证书服务商有网页管理端，可以根据邮箱查看相关的证书                                                                                            |
 | SslServer  | 否    | 证书服务商（名字或地址），默认：zerossl，你还可以使用：letsencrypt，buypass，ssl等等，<br>或者letsencrypt的测试地址：https://acme-staging-v02.api.letsencrypt.org/directory |
 
 # 证书路径和openresty配置方法
