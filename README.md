@@ -31,7 +31,9 @@ This is a Openresty image with auto ssl，use acme.sh， you can set default-ca,
       -e mail="my@example.com" \
       --name myopenresty xiaojun207/openresty:latest
 ```
-注意：建议把路径/usr/local/openresty/nginx/conf/ssl、/acme_cert/中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
+注意：
+    1、建议把路径/usr/local/openresty/nginx/conf/ssl、/acme_cert/中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
+    2、不要改变nginx.conf的路径，否则证书生成会失败。
 
 # 使用说明
 默认情况下, 使用的是服务器验证，所以请确保，被申请ssl的域名可以访问到openresty容器。
