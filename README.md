@@ -31,7 +31,7 @@ This is a Openresty image with auto ssl，use acme.sh， you can set default-ca,
       -e mail="youmail@example.com" \
       --name myopenresty xiaojun207/openresty:latest
 ```
-注意：建议把路径/etc/nginx/ssl、/acme_cert中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
+注意：建议把路径/usr/local/openresty/nginx/conf/ssl、/root/.acme.sh/中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
 
 # 使用说明
 默认情况下, 使用的是服务器验证，所以请确保，被申请ssl的域名可以访问到openresty容器。
@@ -45,7 +45,7 @@ This is a Openresty image with auto ssl，use acme.sh， you can set default-ca,
 | SslServer  | 否    | 证书服务商（名字或地址），默认：zerossl，你还可以使用：letsencrypt，buypass，ssl等等，<br>或者letsencrypt的测试地址：https://acme-staging-v02.api.letsencrypt.org/directory |
 
 # 证书路径和openresty配置方法
-容器启动，会创建一个默认证书，避免openresty启动失败。 证书获取成功后，将会被安装到/etc/openresty/ssl/app/，
+容器启动，会创建一个默认证书，避免openresty启动失败。 证书获取成功后，将会被安装到/usr/local/openresty/nginx/conf/ssl，
 
 openresty配置方法如下：
 ```shell
@@ -62,8 +62,8 @@ openresty配置方法如下：
         root /data/web/www;
     
         ssl_stapling off;
-        ssl_certificate ssl/cert.pem;
-        ssl_certificate_key ssl/key.pem;
+        ssl_certificate ssl/cert.pem; # ssl全路径是：/usr/local/openresty/nginx/conf/ssl/
+        ssl_certificate_key ssl/key.pem; # ssl全路径是：/usr/local/openresty/nginx/conf/ssl/
     
         # ...
     }
