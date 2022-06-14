@@ -25,13 +25,13 @@ This is a Openresty image with auto ssl，use acme.sh， you can set default-ca,
  docker run -d -p 80:80 -p 443:443 -v "/data/web":/data/web \
       -v /data/openresty/nginx/conf/ssl:/usr/local/openresty/nginx/conf/ssl \
       -v /data/openresty/nginx/conf/conf.d:/usr/local/openresty/nginx/conf/conf.d \
-      -v "/data/openresty/acme_cert":/root/.acme.sh/ \
+      -v "/data/openresty/acme_cert":/acme_cert/ \
       -e DOMAINS="example.com www.example.com test.example.com test2.example.com" \
       -e SslServer="zerossl" \
       -e mail="youmail@example.com" \
       --name myopenresty xiaojun207/openresty:latest
 ```
-注意：建议把路径/usr/local/openresty/nginx/conf/ssl、/root/.acme.sh/中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
+注意：建议把路径/usr/local/openresty/nginx/conf/ssl、/acme_cert/中的内容都持久化到宿主机保存，避免容器删除后，启动后会自动再次获取（频繁申请证书会被服务商限制）。
 
 # 使用说明
 默认情况下, 使用的是服务器验证，所以请确保，被申请ssl的域名可以访问到openresty容器。

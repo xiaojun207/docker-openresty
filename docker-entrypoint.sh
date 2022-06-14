@@ -55,22 +55,19 @@ function StartAcmesh() {
 
   echo "[$(date)] Issue the cert: $DOMAINS with options $ACME_DOMAIN_OPTION"
 
-#  curl https://get.acme.sh | sh
-#  /acme.sh --install
-
   if [[ -n "$SslServer" ]]; then
     # 测试环境 https://acme-staging-v02.api.letsencrypt.org/directory
-    /acme.sh --set-default-ca --server $SslServer
+    /root/.acme.sh/acme.sh --set-default-ca --server $SslServer
   fi
 
   echo "[$(date)] acme.sh register .."
-  /acme.sh --register-account -m $mail
+  /root/.acme.sh/acme.sh --register-account -m $mail
 
   echo "[$(date)] acme.sh issue .."
-  /acme.sh --issue --nginx /usr/local/openresty/nginx/conf/nginx.conf $ACME_DOMAIN_OPTION --renew-hook "${RELOAD_CMD}"
+  /root/.acme.sh/acme.sh --issue --nginx /usr/local/openresty/nginx/conf/nginx.conf $ACME_DOMAIN_OPTION --renew-hook "${RELOAD_CMD}"
 
   echo "[$(date)] acme.sh install-cert .."
-  /acme.sh --install-cert $ACME_DOMAIN_OPTION \
+  /root/.acme.sh/acme.sh --install-cert $ACME_DOMAIN_OPTION \
     --fullchain-file ${SSL_DIR}/fullchain.pem \
     --cert-file ${SSL_DIR}/cert.pem \
     --key-file ${SSL_DIR}/key.pem \
