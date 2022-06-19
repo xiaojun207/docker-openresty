@@ -73,7 +73,7 @@ openresty配置方法如下：
         root /data/web/www;
     
         ssl_stapling off;
-        ssl_certificate ssl/cert.pem; # ssl证书自动安装的路径：/usr/local/openresty/nginx/conf/ssl/
+        ssl_certificate ssl/fullchain.pem; # ssl证书自动安装的路径：/usr/local/openresty/nginx/conf/ssl/
         ssl_certificate_key ssl/key.pem; # ssl证书自动安装的路径：/usr/local/openresty/nginx/conf/ssl/
     
         # ...
