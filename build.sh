@@ -6,7 +6,7 @@ IMAGE=xiaojun207/openresty
 # 版本信息来自openresty官方镜像
 # https://hub.docker.com/r/openresty/openresty/tags
 OPENRESTY_VERSIONS=(
-  1.21.4.1
+  1.21.4.3
 )
 
 function build() {
@@ -23,8 +23,9 @@ function build() {
   TAG_LATEST="${MAJOR}.${MINOR}"
   TAG_SPECIAL="${MAJOR}.${MINOR}.${PATCH}"
 
-  docker buildx build \
-    --platform linux/amd64,linux/arm64 \
+#    --platform linux/amd64,linux/arm64 \
+
+  docker build \
     --build-arg OPENRESTY_VERSION="$OPENRESTY_VERSION" \
     --tag $IMAGE:"latest" \
     --tag $IMAGE:"$TAG_LATEST" \
