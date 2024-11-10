@@ -1,4 +1,4 @@
-ARG OPENRESTY_VERSION
+ARG OPENRESTY_VERSION=1.27.1.1
 FROM openresty/openresty:${OPENRESTY_VERSION}-alpine
 
 LABEL maintainer="xiaojun207 <xiaojun207@126.com>"

@@ -6,7 +6,7 @@ IMAGE=xiaojun207/openresty
 # 版本信息来自openresty官方镜像
 # https://hub.docker.com/r/openresty/openresty/tags
 OPENRESTY_VERSIONS=(
-  1.21.4.3
+  1.27.1.1
 )
 
 function build() {
