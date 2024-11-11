@@ -3,6 +3,7 @@
 
 export DOMAINS=$(echo "$SslDomains" | tr -s ';')
 export SslServer="$SslServer"
+export debug="$Ssldebug"
 export mail="$mail"
 export SSL_DIR="/usr/local/openresty/nginx/conf/ssl"
 export RELOAD_CMD="openresty -s reload"
@@ -51,10 +52,15 @@ function StartAcmesh() {
     else
       ACME_DOMAIN_OPTION+=" -d ${list[$i]}"
     fi
-    if [[ -n "$dns" ]]; then
-       ACME_DOMAIN_OPTION+=" --dns $dns"
-    fi
   done
+
+  if [[ -n "$dns" ]]; then
+     ACME_DOMAIN_OPTION+=" --dns $dns"
+  else
+     ACME_DOMAIN_OPTION+=" --nginx /usr/local/openresty/nginx/conf/nginx.conf "
+  fi
+
+  ACME_DOMAIN_OPTION+=" $debug"
 
   echo "[$(date)] Issue the cert: $DOMAINS with options $ACME_DOMAIN_OPTION"
 
@@ -67,7 +73,7 @@ function StartAcmesh() {
   /root/.acme.sh/acme.sh --register-account -m $mail
 
   echo "[$(date)] 2、acme.sh issue .."
-  /root/.acme.sh/acme.sh --issue --nginx /usr/local/openresty/nginx/conf/nginx.conf $ACME_DOMAIN_OPTION --renew-hook "${RELOAD_CMD}"
+  /root/.acme.sh/acme.sh --issue $ACME_DOMAIN_OPTION --renew-hook "${RELOAD_CMD}"
 
   echo "[$(date)] 3、acme.sh install-cert .."
   /root/.acme.sh/acme.sh --install-cert $ACME_DOMAIN_OPTION \

@@ -48,12 +48,13 @@ https://github.com/xiaojun207/docker-nginx
 
 # 参数说明
 
-| 参数         | 是否必填 | 说明                                                                                                                                                                                                                                                                                                                                   |
+| 参数| 是否必填 | 说明                                                                                                                                                                                                                                                                                                                                   |
 |------------|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| SslDomains | 必填   | 需要获取参数ssl的域名列表。多个域名间以英文分号分隔(即：;)。如果为空或不填，这就是个普通的openresty镜像，哈哈。                                                                                                                                                                                                                                                                  |
+| SslDomains | 必填   | 需要获取参数ssl的域名列表。多个域名间以英文分号分隔(即：;)。如果为空或不填，这就是个普通的openresty镜像，哈哈。                                                                                                                                                                                                                                                                      |
 | mail       | 否    | 你的邮箱，用于获取ssl时配置，有的证书服务商有网页管理端，可以根据邮箱查看相关的证书。如果为空可能会导致注册到证书服务商失败，因此如果参数为空会使用默认邮箱。                                                                                                                                                                                                                                                     |
 | SslServer  | 否    | 证书服务商（名字或地址），默认：zerossl，你还可以使用：letsencrypt，buypass，ssl等等，<br>或者letsencrypt的测试地址：https://acme-staging-v02.api.letsencrypt.org/directory                                                                                                                                                                                               |
 | dns        | 否 | 域名是否采用dns验证，可选参数为：空格，dns_ali，dns_aws，dns_cf，dns_dp，，。。。<br> 更多参数请查看：https://github.com/acmesh-official/acme.sh/wiki/dnsapi <br>例如1： -e dns=" ", 空格时，请查看控制台日志中的dns记录，并手动为域名添加解析；<br>例如2： -e dns="dns_ali" -e Ali_Key="sdfsdfsdfljlbjkljlkjsdfoiwje" -e Ali_Secret="jlsdflanljkljlfdsaklkjflsa" 使用云厂商api，请添加对应的key、secret等"添加域名解析"授权参数 |
+| Ssldebug | 否 | 是否开启debug日志，<br>例如1： -e Ssldebug="--debug" |
 
 # 证书路径和openresty配置方法
 容器启动，会创建一个默认证书，避免openresty启动失败。 证书获取成功后，将会被安装到固定路径：/usr/local/openresty/nginx/conf/ssl，
